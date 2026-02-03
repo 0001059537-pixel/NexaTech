@@ -1,0 +1,49 @@
+name: Deploy to Github Pages
+
+# É o gatilho para a ação
+
+on:
+  push:
+    branches: ["main", "master"]
+       # Altere para o nome do branch que você deseja monitorar
+  workflow_dispatch:
+    # Permite que a ação seja iniciada manualmente a partir da interface do GitHub
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+  #integridade das páginas
+
+concurrency:
+cancel-in-progress: false
+
+#significa trabalhos, listas de tarefas
+
+jobs:
+  deploy:
+    enviroment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 
+
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+ 
+ #ação para configurar o node
+        -name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+        patch: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: peaceiris/actions-gh-pages@v4
+        
